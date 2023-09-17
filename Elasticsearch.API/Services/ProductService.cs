@@ -44,12 +44,46 @@ namespace Elasticsearch.API.Services
 
                 else
                 {
-                    productListDto.Add(new ProductDto(x.Id, x.Name, x.Price, x.Stock, new ProductFeatureDto(x.Feature.Width, x.Feature.Height, x.Feature.Color)));
+                    productListDto.Add(new ProductDto(x.Id, x.Name, x.Price, x.Stock, new ProductFeatureDto(x.Feature.Width, x.Feature.Height, x.Feature.Color.ToString())));
                 }
 
             }
 
             return ResponseDto<List<ProductDto>>.Success(productListDto, HttpStatusCode.OK);
         }
+
+        public async Task<ResponseDto<ProductDto>> GetByIdAsync(string id)
+        {
+            var hasProduct = await _productRepository.GetByIdAsync(id);
+            if (hasProduct==null)
+            {
+                return ResponseDto<ProductDto>.Fail("ürün bulunadı", HttpStatusCode.NotFound);
+            }
+
+            return ResponseDto<ProductDto>.Success(hasProduct.CreateDto(),HttpStatusCode.OK);
+
+        }
+
+        public async Task<ResponseDto<bool>> UpdateAsync(ProductUpdateDto updateProduct)
+        {
+            var isSuccess = await _productRepository.UpdateAsync(updateProduct);
+            if (!isSuccess)
+            {
+                return ResponseDto<bool>.Fail(new List<string> { "Update esnasında bir hata meydana geldi" }, HttpStatusCode.InternalServerError);
+            }
+
+            return ResponseDto<bool>.Success(true, HttpStatusCode.NoContent);
+        }
+        public async Task<ResponseDto<bool>> DeleteAsync(string id)
+        {
+            var isSuccess = await _productRepository.DeleteAsync(id);
+            if (!isSuccess)
+            {
+                return ResponseDto<bool>.Fail(new List<string> { "silme esnasında bir hata meydana geldi" }, HttpStatusCode.InternalServerError);
+            }
+
+            return ResponseDto<bool>.Success(true, HttpStatusCode.NoContent);
+        }
+
     }
 }

@@ -6,16 +6,16 @@ namespace Elasticsearch.API.DTOs
     {
         public Product CreateProduct()
         {
-            return new Product 
-            { 
-                Name = Name, 
+            return new Product
+            {
+                Name = Name,
                 Price = Price,
-                Stock=Stock,
-                Feature=new ProductFeature() 
-                { 
-                    Width=Feature.Width, 
-                    Height=Feature.Height, 
-                    Color=Feature.Color 
+                Stock = Stock,
+                Feature = new ProductFeature()
+                {
+                    Width = Feature.Width,
+                    Height = Feature.Height,
+                    Color =(EColor)int.Parse( Feature.Color)
                 } 
             };
         }
